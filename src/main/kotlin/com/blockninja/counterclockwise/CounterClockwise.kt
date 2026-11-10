@@ -1,7 +1,7 @@
 package com.blockninja.counterclockwise
 
 import com.blockninja.counterclockwise.entity.CounterClockwiseEntityTypes
-import com.blockninja.counterclockwise.ships.BeltStorageForceInducer
+import com.blockninja.counterclockwise.ships.BeltForceInducer
 import com.blockninja.counterclockwise.ships.FanForceInducer
 import com.simibubi.create.AllBlocks
 import net.minecraft.core.BlockPos
@@ -17,7 +17,6 @@ import org.joml.primitives.AABBd
 import org.valkyrienskies.core.api.VsBeta
 import org.valkyrienskies.core.api.event.RegisteredListener
 import org.valkyrienskies.core.api.events.CollisionEvent
-import org.valkyrienskies.core.api.events.ShipLoadEvent
 import org.valkyrienskies.core.api.util.GameTickOnly
 import org.valkyrienskies.core.api.util.PhysTickOnly
 import org.valkyrienskies.core.api.util.functions.DoubleTernaryConsumer
@@ -79,13 +78,6 @@ class CounterClockwise {
         }))
 
 
-        vsApi.registerAttachment<BeltStorageForceInducer>(
-            vsApi
-                .newAttachmentRegistrationBuilder(BeltStorageForceInducer::class.java)
-                .useJacksonSerializer()
-                .build()
-            )
-
         vsApi.registerAttachment<FanForceInducer>(
             vsApi
                 .newAttachmentRegistrationBuilder(FanForceInducer::class.java)
@@ -93,12 +85,13 @@ class CounterClockwise {
                 .build()
         )
 
-        vsApi.shipLoadEvent.on(Consumer { event: ShipLoadEvent ->
-            event.ship.setAttachment<BeltStorageForceInducer>(BeltStorageForceInducer())
-        })
-
         vsApi.physTickEvent.on { event ->
             TempUtil.onPhysTick(event.world)
+            BeltForceInducer.onPhysTick(event.world, event.delta)
+        }
+
+        vsApi.tickEndEvent.on { _ ->
+            BeltForceInducer.onGameTickEnd()
         }
 
         CounterClockwiseEntityTypes.register(MOD_BUS)

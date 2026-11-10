@@ -2,7 +2,7 @@
 A new VSxCreate addon that extends VS functionality to base Create!
  
 ## Planned Features
-- [ ] Belts as Tracks
+- [x] Belts as Tracks
 - [ ] Turntables turn Ships
 - [x] Fans push/pull Ships
 - [x] Mechanical arms between ships
